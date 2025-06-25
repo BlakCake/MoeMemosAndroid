@@ -44,8 +44,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.awaitPointerEventScope
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.consume
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.draw.blur
+import androidx.compose.foundation.layout.matchParentSize
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.skydoves.sandwich.suspendOnSuccess
@@ -98,7 +102,9 @@ fun MemosCard(
                     )
                 }
         ) {
-            Column(modifier = Modifier.blur(if (blurred) 16.dp else 0.dp)) {
+            Column(
+                modifier = Modifier.blur(if (blurred) 16.dp else 0.dp)
+            ) {
                 Row(
                     modifier = Modifier
                         .padding(start = 15.dp)
@@ -147,6 +153,20 @@ fun MemosCard(
                             )
                         }
                     })
+            }
+            if (blurred) {
+                Box(
+                    modifier = Modifier
+                        .matchParentSize()
+                        .pointerInput(Unit) {
+                            awaitPointerEventScope {
+                                while (true) {
+                                    val event = awaitPointerEvent()
+                                    event.changes.forEach { it.consume() }
+                                }
+                            }
+                        }
+                )
             }
         }
     }
