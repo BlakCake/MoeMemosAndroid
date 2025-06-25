@@ -15,6 +15,7 @@ message LocalAccount {}
 
 message UserSettings {
   string draft = 1;
+  optional bool blur_nsfw = 2;
 }
 
 message UserData {

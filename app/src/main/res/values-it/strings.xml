@@ -66,4 +66,5 @@
     <string name="delete_this_tag">Elimina questo tag?</string>
     <string name="expand">Espandi</string>
     <string name="collapse">Restringere</string>
+    <string name="blur_nsfw_memos">Blur #nsfw memos</string>
 </resources>

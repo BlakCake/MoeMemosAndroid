@@ -7,10 +7,25 @@ sealed class Account {
         Local -> "local"
     }
 
-    fun toUserData(): UserData = when (this) {
-        is MemosV0 -> UserData.newBuilder().setAccountKey(accountKey()).setMemosV0(this.info).build()
-        is MemosV1 -> UserData.newBuilder().setAccountKey(accountKey()).setMemosV1(this.info).build()
-        Local -> UserData.newBuilder().setAccountKey(accountKey()).setLocal(LocalAccount.getDefaultInstance()).build()
+    fun toUserData(): UserData {
+        val settings = UserSettings.newBuilder().setBlurNsfw(true).build()
+        return when (this) {
+            is MemosV0 -> UserData.newBuilder()
+                .setAccountKey(accountKey())
+                .setMemosV0(this.info)
+                .setSettings(settings)
+                .build()
+            is MemosV1 -> UserData.newBuilder()
+                .setAccountKey(accountKey())
+                .setMemosV1(this.info)
+                .setSettings(settings)
+                .build()
+            Local -> UserData.newBuilder()
+                .setAccountKey(accountKey())
+                .setLocal(LocalAccount.getDefaultInstance())
+                .setSettings(settings)
+                .build()
+        }
     }
 
     companion object {

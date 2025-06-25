@@ -35,14 +35,19 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.pointerInteropFilter
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.skydoves.sandwich.suspendOnSuccess
@@ -56,8 +61,10 @@ import me.mudkip.moememos.ext.titleResource
 import me.mudkip.moememos.ui.page.common.LocalRootNavController
 import me.mudkip.moememos.ui.page.common.RouteName
 import me.mudkip.moememos.viewmodel.LocalMemos
+import me.mudkip.moememos.viewmodel.LocalSettings
 import me.mudkip.moememos.viewmodel.LocalUserState
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun MemosCard(
     memo: Memo,
@@ -67,6 +74,9 @@ fun MemosCard(
 ) {
     val memosViewModel = LocalMemos.current
     val scope = rememberCoroutineScope()
+    val isNsfw = memo.content.contains("#nsfw", ignoreCase = true)
+    val defaultBlur by LocalSettings.current.blurNsfw.collectAsState()
+    var blurred by rememberSaveable(isNsfw, defaultBlur) { mutableStateOf(isNsfw && defaultBlur) }
 
     Card(
         modifier = Modifier
@@ -80,15 +90,20 @@ fun MemosCard(
     ) {
         Box(
             modifier = Modifier
-                .pointerInput(Unit) {
+                .pointerInput(isNsfw) {
                     detectTapGestures(
                         onLongPress = {
                             onEdit(memo)
+                        },
+                        onTap = {
+                            if (isNsfw) blurred = !blurred
                         }
                     )
                 }
         ) {
-            Column {
+            Column(
+                modifier = Modifier.blur(if (blurred) 16.dp else 0.dp)
+            ) {
                 Row(
                     modifier = Modifier
                         .padding(start = 15.dp)
@@ -137,6 +152,13 @@ fun MemosCard(
                             )
                         }
                     })
+            }
+            if (blurred) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .pointerInteropFilter { true }
+                )
             }
         }
     }
