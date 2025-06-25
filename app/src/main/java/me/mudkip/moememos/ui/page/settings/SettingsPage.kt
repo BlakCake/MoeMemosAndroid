@@ -11,6 +11,7 @@ import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.PersonAdd
 import androidx.compose.material.icons.outlined.Source
 import androidx.compose.material.icons.outlined.Web
+import androidx.compose.material.icons.outlined.BlurOn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -22,6 +23,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.material3.Switch
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -34,6 +36,7 @@ import me.mudkip.moememos.ext.popBackStackIfLifecycleIsResumed
 import me.mudkip.moememos.ext.string
 import me.mudkip.moememos.ui.component.MemosIcon
 import me.mudkip.moememos.ui.page.common.RouteName
+import me.mudkip.moememos.viewmodel.LocalSettings
 import me.mudkip.moememos.viewmodel.LocalUserState
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -112,6 +115,18 @@ fun SettingsPage(
             item {
                 SettingItem(icon = Icons.Outlined.PersonAdd, text = R.string.add_account.string) {
                     navController.navigate(RouteName.LOGIN)
+                }
+            }
+
+            item {
+                val settingsViewModel = LocalSettings.current
+                val blurNsfw by settingsViewModel.blurNsfw.collectAsState()
+                SettingItem(icon = Icons.Outlined.BlurOn, text = R.string.blur_nsfw_memos.string,
+                    trailingIcon = {
+                        Switch(checked = blurNsfw, onCheckedChange = null)
+                    }
+                ) {
+                    settingsViewModel.setBlurNsfw(!blurNsfw)
                 }
             }
 

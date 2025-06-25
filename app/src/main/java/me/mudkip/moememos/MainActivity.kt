@@ -10,14 +10,17 @@ import androidx.core.view.WindowCompat
 import dagger.hilt.android.AndroidEntryPoint
 import me.mudkip.moememos.ui.page.common.Navigation
 import me.mudkip.moememos.viewmodel.LocalMemos
+import me.mudkip.moememos.viewmodel.LocalSettings
 import me.mudkip.moememos.viewmodel.LocalUserState
 import me.mudkip.moememos.viewmodel.MemosViewModel
+import me.mudkip.moememos.viewmodel.SettingsViewModel
 import me.mudkip.moememos.viewmodel.UserStateViewModel
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val userStateViewModel: UserStateViewModel by viewModels()
     private val memosViewModel: MemosViewModel by viewModels()
+    private val settingsViewModel: SettingsViewModel by viewModels()
 
     companion object {
         const val ACTION_NEW_MEMO = "me.mudkip.moememos.action.NEW_MEMO"
@@ -31,7 +34,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             CompositionLocalProvider(
                 LocalUserState provides userStateViewModel,
-                LocalMemos provides memosViewModel
+                LocalMemos provides memosViewModel,
+                LocalSettings provides settingsViewModel
             ) {
                 Navigation()
             }

@@ -35,6 +35,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -58,6 +59,7 @@ import me.mudkip.moememos.ext.titleResource
 import me.mudkip.moememos.ui.page.common.LocalRootNavController
 import me.mudkip.moememos.ui.page.common.RouteName
 import me.mudkip.moememos.viewmodel.LocalMemos
+import me.mudkip.moememos.viewmodel.LocalSettings
 import me.mudkip.moememos.viewmodel.LocalUserState
 
 @Composable
@@ -70,7 +72,8 @@ fun MemosCard(
     val memosViewModel = LocalMemos.current
     val scope = rememberCoroutineScope()
     val isNsfw = memo.content.contains("#nsfw", ignoreCase = true)
-    var blurred by rememberSaveable(isNsfw) { mutableStateOf(isNsfw) }
+    val defaultBlur by LocalSettings.current.blurNsfw.collectAsState()
+    var blurred by rememberSaveable(isNsfw, defaultBlur) { mutableStateOf(isNsfw && defaultBlur) }
 
     Card(
         modifier = Modifier

@@ -66,4 +66,5 @@
     <string name="delete_this_tag">Bu etiketi silmek istiyor musunuz?</string>
     <string name="expand">Genişlet</string>
     <string name="collapse">Daralt</string>
+    <string name="blur_nsfw_memos">Blur #nsfw memos</string>
 </resources>
