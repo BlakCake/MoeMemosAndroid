@@ -45,6 +45,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.pointerInteropFilter
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.res.stringResource
@@ -63,6 +64,7 @@ import me.mudkip.moememos.viewmodel.LocalMemos
 import me.mudkip.moememos.viewmodel.LocalSettings
 import me.mudkip.moememos.viewmodel.LocalUserState
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun MemosCard(
     memo: Memo,
