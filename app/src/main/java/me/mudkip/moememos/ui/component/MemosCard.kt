@@ -157,7 +157,14 @@ fun MemosCard(
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .pointerInteropFilter { true }
+                        .pointerInput(Unit) {
+                            awaitPointerEventScope {
+                                while (true) {
+                                    val event = awaitPointerEvent()
+                                    event.changes.forEach { it.consume() }
+                                }
+                            }
+                        }
                 )
             }
         }
