@@ -160,7 +160,8 @@ fun MemosCard(
                         .pointerInput(Unit) {
                             awaitPointerEventScope {
                                 while (true) {
-                                    awaitPointerEvent()
+                                    val event = awaitPointerEvent()
+                                    event.changes.forEach { it.consume() }
                                 }
                             }
                         }
