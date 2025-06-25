@@ -39,10 +39,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.skydoves.sandwich.suspendOnSuccess
@@ -67,6 +69,8 @@ fun MemosCard(
 ) {
     val memosViewModel = LocalMemos.current
     val scope = rememberCoroutineScope()
+    val isNsfw = memo.content.contains("#nsfw", ignoreCase = true)
+    var blurred by rememberSaveable(isNsfw) { mutableStateOf(isNsfw) }
 
     Card(
         modifier = Modifier
@@ -80,15 +84,18 @@ fun MemosCard(
     ) {
         Box(
             modifier = Modifier
-                .pointerInput(Unit) {
+                .pointerInput(isNsfw) {
                     detectTapGestures(
                         onLongPress = {
                             onEdit(memo)
+                        },
+                        onTap = {
+                            if (isNsfw) blurred = !blurred
                         }
                     )
                 }
         ) {
-            Column {
+            Column(modifier = Modifier.blur(if (blurred) 16.dp else 0.dp)) {
                 Row(
                     modifier = Modifier
                         .padding(start = 15.dp)
